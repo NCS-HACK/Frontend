@@ -6,7 +6,7 @@ const navItems = [
     { name: "Members", path: "/members", icon: <Users /> },
     { name: "Events", path: "/events", icon: <Calendar /> },
     { name: "Tasks", path: "/tasks", icon: <ClipboardList /> },
-    { name: "Minutes", path: "/minutes", icon: <FileText /> },
+    // { name: "Minutes", path: "/minutes", icon: <FileText /> },
     { name: "Files", path: "/files", icon: <Archive /> },
     { name: "Polls", path: "/polls", icon: <Vote /> },
 ];

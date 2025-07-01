@@ -1,84 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Mail, Phone, Calendar, Users, Crown, Shield, User, Edit, MessageCircle } from "lucide-react";
-
-const mockMembers = [
-    {
-        id: 1,
-        name: "Alex Johnson",
-        email: "alex.johnson@email.com",
-        phone: "+1 (555) 123-4567",
-        role: "Admin",
-        avatar: "AJ",
-        status: "active",
-        joinDate: "2023-01-15",
-        tasks: 5,
-        events: 12,
-        bio: "Experienced club administrator with 5+ years of leadership experience. Passionate about community building and event organization.",
-        skills: ["Leadership", "Event Planning", "Budget Management", "Team Coordination"],
-        recentActivity: [
-            { type: "task", description: "Completed budget review", date: "2024-01-15" },
-            { type: "event", description: "Attended team meeting", date: "2024-01-14" },
-            { type: "task", description: "Created new event proposal", date: "2024-01-12" }
-        ]
-    },
-    {
-        id: 2,
-        name: "Sarah Williams",
-        email: "sarah.w@email.com",
-        phone: "+1 (555) 234-5678",
-        role: "Coordinator",
-        avatar: "SW",
-        status: "active",
-        joinDate: "2023-02-20",
-        tasks: 3,
-        events: 8,
-        bio: "Creative coordinator with expertise in event management and member engagement. Always looking for innovative ways to improve club activities.",
-        skills: ["Event Management", "Communication", "Creative Planning", "Member Engagement"],
-        recentActivity: [
-            { type: "event", description: "Organized social gathering", date: "2024-01-15" },
-            { type: "task", description: "Updated website content", date: "2024-01-13" },
-            { type: "event", description: "Coordinated workshop", date: "2024-01-10" }
-        ]
-    },
-    {
-        id: 3,
-        name: "Mike Chen",
-        email: "mike.chen@email.com",
-        phone: "+1 (555) 345-6789",
-        role: "Member",
-        avatar: "MC",
-        status: "active",
-        joinDate: "2023-03-10",
-        tasks: 2,
-        events: 6,
-        bio: "Dedicated member with strong analytical skills. Contributes to financial planning and strategic decision-making.",
-        skills: ["Financial Analysis", "Strategic Planning", "Data Analysis", "Problem Solving"],
-        recentActivity: [
-            { type: "task", description: "Reviewed budget proposal", date: "2024-01-15" },
-            { type: "event", description: "Participated in planning session", date: "2024-01-12" },
-            { type: "task", description: "Completed financial report", date: "2024-01-10" }
-        ]
-    },
-    {
-        id: 4,
-        name: "Emily Davis",
-        email: "emily.davis@email.com",
-        phone: "+1 (555) 456-7890",
-        role: "Member",
-        avatar: "ED",
-        status: "inactive",
-        joinDate: "2023-01-25",
-        tasks: 0,
-        events: 3,
-        bio: "Former active member who contributed to various club activities. Currently on hiatus but remains connected to the community.",
-        skills: ["Team Building", "Social Media", "Volunteer Coordination", "Public Relations"],
-        recentActivity: [
-            { type: "event", description: "Last attended social event", date: "2023-12-15" },
-            { type: "task", description: "Completed volunteer coordination", date: "2023-12-10" },
-            { type: "event", description: "Participated in workshop", date: "2023-12-05" }
-        ]
-    }
-];
 
 const roleIcons = {
     Admin: <Crown className="w-4 h-4 text-yellow-500" />,
@@ -95,8 +17,79 @@ const roleColors = {
 export default function MemberProfile() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const member = mockMembers.find(m => m.id === Number(id));
+    const [member, setMember] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    useEffect(() => {
+        setLoading(true);
+        const token = localStorage.getItem('access_token');
+        fetch(`http://localhost:8000/users/${id}/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch member");
+                return res.json();
+            })
+            .then((user) => {
+                let role = '';
+                if (user.is_admin) {
+                    role = 'Admin';
+                } else if (user.is_board) {
+                    role = `${capitalizeDepartment(user.department)} Leader`;
+                } else {
+                    role = capitalizeDepartment(user.department);
+                }
+                let joinDate = '';
+                if (user.date_joined) {
+                    const date = new Date(user.date_joined);
+                    joinDate = date.toLocaleDateString();
+                }
+                const tasks = Math.floor(Math.random() * 12);
+                const events = Math.floor(Math.random() * 12);
+                setMember({
+                    id: user.id,
+                    name: `${user.first_name} ${user.last_name}`,
+                    email: user.email,
+                    phone: user.phone_number,
+                    role,
+                    avatar: `${user.first_name[0] || ''}${user.last_name[0] || ''}`.toUpperCase(),
+                    status: user.is_active ? "active" : "inactive",
+                    joinDate,
+                    tasks,
+                    events,
+                    bio: "",
+                    skills: [],
+                    recentActivity: []
+                });
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [id]);
+
+    function capitalizeDepartment(dept) {
+        const departments = {
+            finance: 'Finance',
+            hr: 'HR',
+            er: 'ER',
+            'technical_team': 'Technical Team',
+            marketing: 'Marketing',
+            'visual_creation': 'Visual Creation'
+        };
+        return departments[dept] || dept;
+    }
+
+    if (loading) {
+        return <div>Loading member profile...</div>;
+    }
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
     if (!member) {
         return (
             <div className="text-center py-12">
@@ -145,14 +138,14 @@ export default function MemberProfile() {
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <button className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition flex items-center gap-2">
+                        {/* <button className="bg-primary/10 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition flex items-center gap-2">
                             <Edit size={16} />
                             Edit Profile
-                        </button>
-                        <button className="bg-accent/10 text-accent px-4 py-2 rounded-lg hover:bg-accent/20 transition flex items-center gap-2">
+                        </button> */}
+                        {/* <button className="bg-accent/10 text-accent px-4 py-2 rounded-lg hover:bg-accent/20 transition flex items-center gap-2">
                             <MessageCircle size={16} />
                             Send Message
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
@@ -172,7 +165,7 @@ export default function MemberProfile() {
                         </div>
                         <div className="flex items-center gap-3">
                             <Calendar className="w-5 h-5 text-gray-400" />
-                            <span className="text-gray-700">Joined {new Date(member.joinDate).toLocaleDateString()}</span>
+                            <span className="text-gray-700">Joined {member.joinDate}</span>
                         </div>
                     </div>
                 </div>

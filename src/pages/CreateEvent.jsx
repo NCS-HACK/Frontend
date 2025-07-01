@@ -60,7 +60,14 @@ export default function CreateEvent() {
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Type</label>
-                    <input className="w-full border rounded px-3 py-2" name="event_type" value={form.event_type} onChange={handleChange} placeholder="Type (e.g. meeting)" />
+                    <select className="w-full border rounded px-3 py-2" name="event_type" value={form.event_type} onChange={handleChange}>
+                        
+                        <option value="meeting">Meeting</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="party">Party</option>
+                        <option value="competition">Competition</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Start Time</label>
@@ -76,7 +83,15 @@ export default function CreateEvent() {
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Department</label>
-                    <input className="w-full border rounded px-3 py-2" name="department" value={form.department} onChange={handleChange} placeholder="Department" />
+                    <select className="w-full border rounded px-3 py-2" name="department" value={form.department} onChange={handleChange}>
+                        
+                        <option value="finance">Finance</option>
+                        <option value="hr">HR</option>
+                        <option value="er">ER</option>
+                        <option value="technical_team">Technical Team</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="visual_creation">Visual Creation</option>
+                    </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Mandatory</label>
@@ -84,7 +99,13 @@ export default function CreateEvent() {
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Status</label>
-                    <input className="w-full border rounded px-3 py-2" name="status" value={form.status} onChange={handleChange} placeholder="Status (e.g. upcoming)" />
+                    <select className="w-full border rounded px-3 py-2" name="status" value={form.status} onChange={handleChange}>
+                        
+                        <option value="upcoming">Upcoming</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="completed">Completed</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
                 </div>
                 <div className="flex gap-2 mt-4">
                     <button type="button" onClick={() => navigate(-1)} className="bg-gray-100 px-4 py-2 rounded">Cancel</button>

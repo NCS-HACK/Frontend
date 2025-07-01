@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Sidebar from "./components/Common/Sidebar";
 import Topbar from "./components/Common/Topbar";
 import Dashboard from "./pages/Dashboard";
@@ -14,6 +20,12 @@ import EventDetails from "./pages/EventDetails";
 import TaskDetails from "./pages/TaskDetails";
 import MinutesDetails from "./pages/MinutesDetails";
 import Login from "./pages/Login";
+import CreateEvent from "./pages/CreateEvent";
+import EditEvent from "./pages/EditEvent";
+import CreateTask from "./pages/CreateTask";
+import EditTask from "./pages/EditTask";
+import FileDetails from "./pages/FileDetails";
+import PollDetails from "./pages/PollDetails";
 
 // Auth wrapper to protect routes
 function RequireAuth({ children }) {
@@ -44,13 +56,19 @@ function App() {
                       <Route path="/members" element={<Members />} />
                       <Route path="/members/:id" element={<MemberProfile />} />
                       <Route path="/events" element={<Events />} />
+                      <Route path="/events/create" element={<CreateEvent />} />
                       <Route path="/events/:id" element={<EventDetails />} />
+                      <Route path="/events/:id/edit" element={<EditEvent />} />
                       <Route path="/tasks" element={<Tasks />} />
+                      <Route path="/tasks/create" element={<CreateTask />} />
                       <Route path="/tasks/:id" element={<TaskDetails />} />
+                      <Route path="/tasks/:id/edit" element={<EditTask />} />
                       <Route path="/minutes" element={<Minutes />} />
                       <Route path="/minutes/:id" element={<MinutesDetails />} />
                       <Route path="/files" element={<Files />} />
+                      <Route path="/files/:id" element={<FileDetails />} />
                       <Route path="/polls" element={<Polls />} />
+                      <Route path="/polls/:id" element={<PollDetails />} />
                     </Routes>
                   </main>
                 </div>

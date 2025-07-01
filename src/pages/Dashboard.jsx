@@ -1,6 +1,8 @@
 import { Calendar, Users, ClipboardList, TrendingUp, Bell, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+    const navigate = useNavigate();
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -8,10 +10,10 @@ export default function Dashboard() {
                     <h1 className="text-3xl font-bold text-primary">Dashboard</h1>
                     <p className="text-text/70">Welcome back! Here's what's happening with your club.</p>
                 </div>
-                <button className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
+                {/* <button className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
                     <Plus size={20} />
                     Quick Action
-                </button>
+                </button> */}
             </div>
 
             {/* Stats Cards */}
@@ -84,7 +86,10 @@ export default function Dashboard() {
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                     <h3 className="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
                     <div className="space-y-3">
-                        <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                        <button
+                            className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
+                            onClick={() => navigate('/events/create')}
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                                     <Calendar className="w-4 h-4 text-primary" />
@@ -95,7 +100,10 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </button>
-                        <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                        <button
+                            className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
+                        // No action for Add Member
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
                                     <Users className="w-4 h-4 text-accent" />
@@ -106,7 +114,10 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </button>
-                        <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                        <button
+                            className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
+                            onClick={() => navigate('/tasks/create')}
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
                                     <ClipboardList className="w-4 h-4 text-secondary" />

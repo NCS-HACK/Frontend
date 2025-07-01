@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function parseJwt(token) {
     if (!token) return null;
@@ -15,51 +15,19 @@ function parseJwt(token) {
     }
 }
 
-export default function EditTask() {
-    const { id } = useParams();
+export default function CreateTask() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
         title: '',
         description: '',
         assigned_to: '',
-        status: '',
+        status: 'ToDo',
         due_date: '',
         priority: '',
         department: '',
-        creator: ''
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    useEffect(() => {
-        setLoading(true);
-        const token = localStorage.getItem('access_token');
-        fetch(`http://localhost:8000/tasks/${id}/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch task');
-                return res.json();
-            })
-            .then(data => {
-                setForm({
-                    title: data.title || '',
-                    description: data.description || '',
-                    assigned_to: data.assigned_to || '',
-                    status: data.status || '',
-                    due_date: data.due_date ? data.due_date.slice(0, 16) : '',
-                    priority: data.priority || '',
-                    department: data.department || '',
-                    creator: data.creator || ''
-                });
-                setLoading(false);
-            })
-            .catch(err => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, [id]);
     const handleChange = e => {
         const { name, value } = e.target;
         setForm(f => ({
@@ -70,32 +38,33 @@ export default function EditTask() {
     const handleSubmit = async e => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
         const token = localStorage.getItem('access_token');
         const payload = parseJwt(token);
         const creator = payload ? payload.user_id : null;
         try {
             const body = { ...form, creator };
-            const res = await fetch(`http://localhost:8000/tasks/${id}/update/`, {
-                method: 'PATCH',
+            console.log(body);
+            const res = await fetch('http://localhost:8000/tasks/create/', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(body)
             });
-            if (!res.ok) throw new Error('Failed to update task');
-            navigate(`/tasks/${id}`);
+            if (!res.ok) throw new Error('Failed to create task');
+            const data = await res.json();
+            navigate(`/tasks`);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
     };
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
     return (
         <div className="max-w-xl mx-auto bg-white rounded-xl shadow p-6 mt-6">
-            <h1 className="text-2xl font-bold text-primary mb-4">Edit Task #{id}</h1>
+            <h1 className="text-2xl font-bold text-primary mb-4">Create Task</h1>
             <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label className="block text-sm font-medium mb-1">Title</label>
@@ -116,7 +85,7 @@ export default function EditTask() {
                 <div>
                     <label className="block text-sm font-medium mb-1">Priority</label>
                     <select className="w-full border rounded px-3 py-2" name="priority" value={form.priority} onChange={handleChange}>
-                        <option value="">Select priority</option>
+
                         <option value="1">Low</option>
                         <option value="2">Medium</option>
                         <option value="3">High</option>
@@ -125,7 +94,6 @@ export default function EditTask() {
                 <div>
                     <label className="block text-sm font-medium mb-1">Status</label>
                     <select className="w-full border rounded px-3 py-2" name="status" value={form.status} onChange={handleChange}>
-                        <option value="">Select status</option>
                         <option value="ToDo">To Do</option>
                         <option value="InProgress">In Progress</option>
                         <option value="Done">Done</option>
@@ -135,7 +103,7 @@ export default function EditTask() {
                 <div>
                     <label className="block text-sm font-medium mb-1">Department</label>
                     <select className="w-full border rounded px-3 py-2" name="department" value={form.department} onChange={handleChange}>
-                        <option value="">Select department</option>
+
                         <option value="finance">Finance</option>
                         <option value="hr">HR</option>
                         <option value="er">ER</option>
@@ -146,8 +114,9 @@ export default function EditTask() {
                 </div>
                 <div className="flex gap-2 mt-4">
                     <button type="button" onClick={() => navigate(-1)} className="bg-gray-100 px-4 py-2 rounded">Cancel</button>
-                    <button type="submit" className="bg-accent text-white px-4 py-2 rounded">Save Changes</button>
+                    <button type="submit" className="bg-accent text-white px-4 py-2 rounded" disabled={loading}>{loading ? 'Creating...' : 'Create Task'}</button>
                 </div>
+                {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
             </form>
         </div>
     );
