@@ -87,9 +87,9 @@ export default function Members() {
                     <h1 className="text-3xl font-bold text-primary">Members</h1>
                     <p className="text-text/70">Manage your club members and their roles</p>
                 </div>
-                <button className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
+                <button type="button" onClick={() => navigate('/members/invite')} className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
                     <Plus size={20} />
-                    Add Member
+                    Invite Member
                 </button>
             </div>
 

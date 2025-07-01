@@ -55,7 +55,7 @@ export default function Minutes() {
                     <h1 className="text-3xl font-bold text-primary">Meeting Minutes</h1>
                     <p className="text-text/70">Document and manage meeting notes and decisions</p>
                 </div>
-                <button className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
+                <button type="button" onClick={() => navigate('/minutes/1/edit')} className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
                     <Plus size={20} />
                     Create Minutes
                 </button>
@@ -137,14 +137,19 @@ export default function Minutes() {
                                 ))}
                             </div>
 
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 mt-2">
                                 <button
                                     onClick={() => navigate(`/minutes/${minute.id}`)}
                                     className="flex-1 bg-primary/10 text-primary px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/20 transition">
                                     View Full Minutes
                                 </button>
+                                <button
+                                    onClick={() => navigate(`/minutes/${minute.id}/edit`)}
+                                    className="flex-1 bg-secondary/10 text-secondary px-3 py-2 rounded-lg text-sm font-medium hover:bg-secondary/20 transition flex items-center gap-1">
+                                    <Edit size={16} /> Edit
+                                </button>
                                 <button className="flex-1 bg-accent/10 text-accent px-3 py-2 rounded-lg text-sm font-medium hover:bg-accent/20 transition">
-                                    Edit
+                                    Download
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, Filter, Clock, User, Flag, Calendar } from "lucide-react";
+import { Plus, Search, Filter, Clock, User, Flag, Calendar, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const mockTasks = [
@@ -128,13 +128,19 @@ export default function Tasks() {
                 <span className="text-xs text-gray-600">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
             </div>
 
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 mb-2">
                 {task.tags.map((tag, index) => (
                     <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
                         {tag}
                     </span>
                 ))}
             </div>
+
+            <button
+                onClick={e => { e.stopPropagation(); navigate(`/tasks/${task.id}/edit`); }}
+                className="w-full bg-secondary/10 text-secondary px-3 py-2 rounded-lg text-sm font-medium hover:bg-secondary/20 transition flex items-center gap-1 mt-2">
+                <Edit size={16} /> Edit
+            </button>
         </div>
     );
 
@@ -166,7 +172,7 @@ export default function Tasks() {
                     <h1 className="text-3xl font-bold text-primary">Tasks</h1>
                     <p className="text-text/70">Manage and track club responsibilities and projects</p>
                 </div>
-                <button className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
+                <button type="button" onClick={() => navigate('/tasks/1/edit')} className="bg-accent text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-accent/90 transition">
                     <Plus size={20} />
                     Create Task
                 </button>
